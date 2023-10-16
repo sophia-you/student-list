@@ -12,10 +12,11 @@ using namespace std;
  * When you type in "delete," the computer requests the student id and deletes
  * that student.
  * Sources |
- * https://cplusplus.com/forum/beginner/25343/ 
+ * https://cplusplus.com/forum/beginner/25343/
+ * https://www.shiksha.com/online-courses/articles/erasing-elements-from-a-vector-in-c/
  */
 
-
+// a data type called Student, which stores student info
 struct Student {
   char first[25];
   char last[25];
@@ -41,15 +42,18 @@ int main()
   char deleteCommand[] = "delete";
   char printCommand[] = "print";
 
-  char editing = 'y';
-  while (editing == 'y')
+  bool editing = true;
+  while (editing) // prompts the user to keep entering commands until they type 'n'
     {
-  cout << "Type 'add' to add a student." << endl;
+      // prompts user for command type
+      cout << "Type 'add' to add a student." << endl;
       cout << "Type 'delete' to delete a student." << endl;
       cout << "Type 'print' to print the student roster." << endl;
+      cout << "Type 'quit' to exit editing mode." << endl;
       cin.getline(input, max);
       int length = strlen(input);
       input[length + 1] = '\0';
+      
       if (strcmp(input, addCommand) == 0)
 	{
 	  cout << "You are now adding a student to the roster." << endl;
@@ -65,10 +69,20 @@ int main()
 	  cout << "Printing roster..." << endl;
 	  print(studentList);
 	}
+      else if (strcmp(input, "quit") == 0)
+	{
+	  editing = false; 
+	}
+      else
+	{
+	  cout << "Command not recognized." << endl;
+	  cout << "Check your spelling and remember to use only lowercase letters." << endl;
+	}
 
-      cout << "Continue editing? Type 'y' to continue, type 'n' to quit" << endl;
-      cin >> editing;
-      cin.ignore(80, '\n');
+      // if 'y', the loop continues, otherwise exit the program
+      //cout << "Continue editing? Type 'y' to continue, type 'n' to quit" << endl;
+      //cin >> editing;
+      //cin.ignore(80, '\n');
     }
   
   cout << "Roster updated." << endl;
@@ -100,18 +114,13 @@ void addStudent(vector<Student*> &studentList) // by reference/changing the og v
   cin >> (*student).gpa;
   cin.ignore(80, '\n');
 
-  cout << (*student).first << endl;
-  cout << (*student).last << endl;
-  cout << (*student).id << endl;
-  cout.precision(3);
-  cout << (*student).gpa << endl;
   studentList.push_back(student); // add the student
   cout << "Student added successfully. " << endl;
 
 }
 
 /*
- * This function prompts the user for a student's id, and removes them from the roster
+ * This function prompts the user for a student's ID, and removes them from the roster
  */
 void deleteStudent(vector<Student*> &studentList)
 {
@@ -123,9 +132,10 @@ void deleteStudent(vector<Student*> &studentList)
     {
       if (currentID == (*it)->id)
 	{
-	  cout << "Student found. Removing " << (*it) endl;
+	  cout << "Student found. Removing " << (*it)->first << " " << (*it)->last << endl;
 	  studentList.erase(it); // delete the pointer in memory from the studentList vector
 	  delete *it; // we have to delete the student that we made on the heap
+	  break;
 	}
     }
   
@@ -138,12 +148,17 @@ void deleteStudent(vector<Student*> &studentList)
 void print(vector<Student*> &studentList)
 {
   cout << '\n' << endl;
+
+  // walks through each value in the vector, finds the thing it is pointing to, and prints out values
   for (vector<Student*>::iterator it = studentList.begin(); it != studentList.end(); it++)
     {
       cout << (*it)->first << " ";
       cout << (*it)->last << ", ";
       cout << (*it)->id << ", ";
+
+      // make sure the precision is set correctly for GPA
       cout.precision(3);
+      cout.setf(ios::showpoint);
       cout << (*it)->gpa << endl;
     }
 }
