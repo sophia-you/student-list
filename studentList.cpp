@@ -133,8 +133,8 @@ void deleteStudent(vector<Student*> &studentList)
       if (currentID == (*it)->id)
 	{
 	  cout << "Student found. Removing " << (*it)->first << " " << (*it)->last << endl;
-	  studentList.erase(it); // delete the pointer in memory from the studentList vector
 	  delete *it; // we have to delete the student that we made on the heap
+	  studentList.erase(it); // delete the pointer in memory from the studentList vector
 	  break;
 	}
     }
